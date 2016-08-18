@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 print("Hello, World!")
 
 print("我的名字"+"叫"+"MCI")
@@ -632,6 +631,10 @@ print(b)
 
 //感觉函数调用和C语言差不多
 
+
+
+
+
 /***************多个返回值***********************/
 //返回多个值 返回的参数 是 元组
 func more(dics:[String:String]) -> (count1:Int,count2:Int) {
@@ -640,9 +643,79 @@ func more(dics:[String:String]) -> (count1:Int,count2:Int) {
 }
 
 
-let item = more(["key":""])
+var item = more(["key":""])
 print(item.count1)
 print(item.count2)
+
+print("")
+
+//函数本质是一个新的类型  定义一个函数 实际上是在定义一个新的类型 函数的类型名：(参数类型名)＋返回值类型名
+//上面的more 函数的类型为:（[String:String]）->(Int,Int)
+
+//1、定义一个函数类型的变量
+var moreVar:([String:String])->(Int,Int) = more
+
+//现在用这种函数类型的变量和函数more直接用是一样的了
+var item1 = moreVar(["key":"value"])
+print(item1.0)
+print(item1.1)
+
+print("")
+//2、函数类型的行参
+
+func moreFacade(moreFunc:([String:String])->(Int,Int),kids:[String:String]) -> (Int,Int) {
+    
+    return moreFunc(kids)
+}
+//调用
+var m = moreFacade(more, kids: ["wnag":"zong"])
+print(m.0)
+print(m.1)
+
+
+//函数类型作为返回值
+
+func dont(name name:String) -> Bool {
+    
+    return true
+}
+
+func don(name name:String) -> Bool {
+    
+    return false
+}
+
+func choseBankBusiness(bank:String) -> (String)->Bool  {
+    
+    if bank == "我的" {
+        
+        return dont
+    }
+    else
+    {
+        return don
+    }
+    
+}
+
+//柯里化函数 这种写法在后面会被swift移除掉
+
+//func family(address:String)(number:Int)(roomNumber:Int) -> String {
+//    
+//    
+//    return address
+//}
+
+
+/****************闭包**********************/
+
+
+
+
+
+
+
+
 
 
 
