@@ -154,7 +154,7 @@ var commpany = ["name",20] //不指定类型的数组默认是NSObject 类型
 //数组创建和初始化一个空数组
 var list = Array<String>();
 var secondList = [Int]()
-var threeDouble = [Double](count:3,repeatedValue:0.0)
+
 
 
 //数组遍历
@@ -271,6 +271,10 @@ for (key,Vaule) in dic1
 {
     print("key:\(key) Value:\(Vaule)")
 }
+for keyValue in dic1
+{
+    print("\(keyValue.0) \(keyValue.1)")
+}
 
 
 //清空
@@ -336,7 +340,8 @@ for index in 0...10{
 }
 
 
-//自定义对象 运算符
+//运算符重载
+//操作符重载 单目运算符 需要在前面加prefix 或者postfix 表明是前置还是后置
 struct Sword {
     
     var name:String
@@ -368,7 +373,7 @@ prefix func -(sword:Sword) ->Sword
     
 }
 
-//后自加 运算符函数 ++运算符在3.0之后被移除了
+//后自加 运算符函数 ++运算符在3.0之后被移除了 inout关键字让行参可以改实参的值
 postfix func ++(inout sword:Sword)->Sword
 {
     return Sword(name: "mow", width: sword.width+1)
@@ -386,6 +391,258 @@ var smallSword2 = Sword(name: "smallSrord2", width: 10)
 
 var bigSword = smallSword1+smallSword2
 print(bigSword)
+
+if smallSword1 == smallSword2
+{
+    print("相等")
+}
+else
+{
+    print("NO")
+}
+
+
+//自定义运算符
+//operator infix/prefix/postfix 自定义运算符｛｝
+//infix/prefix/postfix func (参数列表)->返回类型
+
+
+//for 循环 两种方式
+//for item in collectType
+//for var index;index<cout;index++
+
+
+//while (){}  
+
+//不知道具体个数的时候采用while更好
+//if 条件 {}
+
+//如果case 条件下有语句则不需要break 如果case下为空语句则需要break来占行 所有情况需要举完 否则 要用default
+
+//switch 支持条件查询
+/*
+ switch 条件｛
+ 
+    case 值 1:
+        响应值1
+ case 值2，值3:
+ 响应值2和3
+ 
+ default：
+ 
+ ｝
+*/
+//switch 支持元组
+
+var student = (2016,"杭州电子科技大学")
+
+switch student
+{
+case (2016,"杭州电子科技大学"):
+    print("美女很多")
+default:
+    print("")
+}
+
+
+//switch 支持区间操作
+
+var position = 33
+switch position
+{
+case 0...14,90..<120:
+    print("不安全")
+case 30...50:
+    print("安全")
+default:
+    print("任务失败")
+}
+
+//switch 支持值绑定和条件值绑定
+//元组和可选类型本质就是对所需类型的封装
+//continue 的用法
+for index in 0...8
+{
+    if index == 2
+    {
+        continue
+    }
+    print(index)
+}
+
+outLabel:for i in 0...8
+{
+    for j in 0...2
+    {
+        if i == 2
+        {
+            continue outLabel //如果不指定跳转到哪一层 默认最近
+        }
+        
+        print("i:\(i) j:\(j)")
+    }
+}
+
+
+//break 用法
+for i in 1...10
+{
+    if i == 2
+    {
+        break
+    }
+    print("\(i)")
+}
+
+outFor:for index in 0...10
+{
+    for path in 2...4
+    {
+        if path == 3
+        {
+            break outFor
+        }
+        
+        print("我的  \(path)")
+    }
+}
+
+//fallthrough swift 默认case 后面有break ，如果想让所有的条件语句都执行 则用fallthrough
+
+var 王宗成 = 22
+switch 王宗成
+{
+case 22:
+    print("22")
+    fallthrough
+case 20:
+    print(20)
+    fallthrough
+default:
+    print("最后一句")
+}
+
+
+/*************************函数**************************/
+/*
+ func <#name#>(<#parameters#>) -> <#return type#> {
+ <#function body#>
+ }
+ */
+
+func doHomeworking(workName:String,time:String,tele:String) -> String {
+    
+    return workName+time+tele;
+}
+
+/* *********************行参取外部名字****************/
+//给函数行参 取外部名字 方便赋值之后阅读代码方便 由于系统默认会给第二个开始的参数添加外部参数名 所有我们只需指定第一个
+
+func sleep(startTime startTime:String,endTime:String) -> String {
+    
+    return startTime+endTime;
+}
+
+print(sleep(startTime: "wode", endTime: "youde"))
+
+print(doHomeworking("体育课", time: "明天下午", tele: "15958171354"))
+
+/**********************可变参数个数****************/
+//函数里面的参数可变 可变参数最多只能有一个  而且必须放在最后一个
+func sum(numbers:Int...) -> Int {
+    
+    var total = 0
+    for number in numbers {
+        
+        total += number
+    }
+    
+    return total;
+    
+}
+
+//上诉方法与这个等价
+func sum1(numbers:[Int]) -> Int {
+    
+    var total = 0
+    for number in numbers {
+        
+        total += number
+    }
+    
+    return total;
+    
+}
+
+print(sum(1,2,3,4,5,6))
+
+print(sum1([23,12,20]))
+
+
+/*******************给行参数默认值**********************************/
+//可以给函数的参数默认赋值 如果在调用函数的时候不赋值 则使用默认的值 行参赋值则使用赋的新值
+func running(kilomiter:String = "20公里") -> String {
+    
+    return kilomiter
+}
+
+//使用默认值
+print(running())
+print(running("800公里"))
+
+func releax(time time:String = "2015.04.05",address:String) -> String {
+    
+    return time+address
+}
+
+var address = "杭州市西湖区"
+
+print(address)
+print(releax(address: address))
+print(address)
+
+//交换两个变量的值
+
+var a = 10
+var b = 20
+swap(&a, &b)
+print(a)
+print(b)
+
+//inout关键字 可以在函数类改行的值参映射到实参 其实差不多是取地址符号的意思
+func swap1(inout a a:Int,inout b:Int) {
+    
+    let tem = a
+    a = b
+    b = tem
+}
+
+swap1(a: &a , b: &b)
+print(a)
+print(b)
+
+//使用了inout 之后不能在用var 或者 let 标记 inout 标记的只能是变量
+
+//没有返回类型
+//
+//
+//func <#name#>(<#parameters#>)  {
+//    <#function body#>
+//}
+
+//感觉函数调用和C语言差不多
+
+/***************多个返回值***********************/
+//返回多个值 返回的参数 是 元组
+func more(dics:[String:String]) -> (count1:Int,count2:Int) {
+    
+    return (20,30)
+}
+
+
+let item = more(["key":""])
+print(item.count1)
+print(item.count2)
 
 
 
