@@ -709,18 +709,261 @@ func choseBankBusiness(bank:String) -> (String)->Bool  {
 
 /****************闭包**********************/
 
+//func compare(a:Int,b:Int) -> Bool {
+//    
+//    return a>b
+//}
+
+
+func sort(nums:[Int],comp:(Int,Int)->Bool) -> [Int] {
+    
+    var newNums = nums
+    
+//    //冒泡法:把两个相近的两个数比较
+//    for _ in 0..<nums.count {
+//        
+//        for j in 0 ..< nums.count-1
+//        {
+//            if comp(newNums[j],newNums[j+1]) {
+//                
+//                let tem : Int = newNums[j]
+//                newNums[j] = newNums[j+1]
+//                newNums[j+1] = tem
+//            }
+//        }
+//    }
+    
+    
+    //选择法
+    
+    for i in 0..<nums.count {
+        
+        var index = 0
+        var tem = newNums[i]
+        
+        for j in i+1..<nums.count {
+            
+            if comp(tem, newNums[j]) {
+                
+            }
+            else
+            {
+                tem = newNums[j]
+                index = j
+            }
+            
+        }
+     
+        if index != 0 {
+            
+            let m = newNums[i]
+            newNums[i] = newNums[index]
+            newNums[index] = m
+        }
+    }
+    
+    return newNums
+}
+//
+//var comp:(Int,Int)->Bool = compare
+//
+//
+//print(sort([20,43,32,90], comp: comp))
 
 
 
+//闭包：可以把简单的函数用 闭包表达式来解决  如上面的compare函数
+var arr = sort([20,43,32,90], comp: {(a:Int,b:Int)->Bool in return a>b})
+print(arr)
+
+//闭包的格式
+/*
+ 
+ {
+    （参数列表）in 函数体
+ }
+ 
+ */
+
+//闭包表达式简化
+print(sort([23,43,45], comp: {a,b in return a>b}))
+print("")
+print(sort([23,43,45], comp: {a,b in a>b}))
+print(sort([23,43,45], comp: {$0>$1}))
+
+//尾闭包：针对多行函数的简化
 
 
 
+/**************************swift 面向对象****************************/
+//类关键字 Class
+class Person{
+    
+    let sex = "male"
+    var name :NSString = ""
+    
+}
+
+//实列化一个对象
+var person1 = Person()
+print(person1.sex)
+person1.name = "王宗晨"
+print(person1.name)
+
+//存储属性：就是在一个类中定义一个常量或者变量，分为常量存储属性，变量存储属性 格式：var 变量名 ＝ 初始值
+//惰性存储属性：类的某些属性必须要有，但是不是一开始的时候就有，经常出现在类初始化的时候没有，到了一定时间或者某个条件出发后才存在，这种属性叫做惰性存储属性。    定义格式:lazy var 变量名 ＝ 初始值
 
 
+//计算属性：通过是否写属性的set、get方法来实现读写权限控制，可以实现间接改变变量属性的值，计算属性必须为var   ，格式：var 变量名：类型｛get｛｝ set｛｝｝
+//类型属性：类型属性是某种类型的所有实列对象都能共享的一个数据（好比C语言中的Static 常量） 类型属性在定义的时候必须设置初始值 格式：Class var 变量名：类型｛ get ｝
 
 
+//存储属性才会占用内存空间 计算属性和类型属性不占用内存空间
+class Buddha {
+    
+    var name:String
+    init(name:String)
+    {
+        self.name = name
+    }
+    
+}
 
 
+class Animal {
+    
+    var name:String = ""
+    //惰性属性
+    lazy var sex:String = ""
+    lazy var buddha = Buddha(name: "今天要学习完Swift")
+    let address:String = "哈哈"
+    //计算属性
+    var number:String
+        {
+        
+        get{
+            
+            return "12061424"
+        }
+        
+//        set{
+//        
+//            self.number = newValue
+//        }
+        
+    }
+    
+    
+    func pray(){
+        
+        print("我除了闭包之外的都会了:\(buddha.name)")
+    }
+}
+
+//实列化的时候 如果属性有lazy 关键字 则不会分配内存，当需要用到改属性的时候才会分配内存 
+//惰性属性使用情况：在类构造实列时无法知道属性所依赖的外部信息，则使用惰性属性，当属性值需要大量复杂的计算是，为了避免阻塞对象初始化,则使用惰性属性.惰性属性必须声明成变量
+var animal = Animal()
+animal.pray()
+print(animal.number)
+
+//计算属性 可以设定访问权限,计算属性，可以间接的获取或者改变其他属性的值，他并不占用内存
+//如果一个属性没有写set 、get 方法其默认具有读写权限 如果两者都写了则不影响 而假如只写其中一个则另外一个权限必将受到限制
+//通过设置set 、 get 来设置读写权限
+
+
+class Languae {
+    
+    class var Clanguage: String {
+        
+        get{
+        
+            return "我知道"
+        }
+    }
+}
+
+print(Languae.Clanguage)
+
+//Languae.Clanguage = "我是真的不想在吃冰了"
+
+var langu = Languae()
+
+//langu.Clanguage = "2008北京奥运会"
+
+print(Languae.Clanguage)
+
+
+/*************************属性观察器******************************/
+
+class Food {
+    
+    var madeAddress:String = "" //存储属性
+    lazy var number:Int = 0 // 惰性存储属性
+    //类型属性
+    class var price:Int {
+        
+        get{
+            
+            return 20
+        }
+    }
+    
+    //计算属性
+    var allPrice:Int{
+        
+        get{
+            
+            return number
+        }
+        
+        set
+        {
+            self.allPrice = newValue
+        }
+    }
+    
+    
+    //属性观察器
+    var shengnei = "浙江省"
+        {
+            willSet
+            {
+                //newValue 表示将要替换的新值 
+                //oldValue 表示被替换之后，其之前的值
+                print("willSet:\(newValue)")  //卧槽 上下
+                print("willNow:\(shengnei)") //浙江省 卧槽
+            }
+        
+            didSet{
+                
+                print("didnow:\(shengnei)")//卧槽 上下
+                print("didSet:\(oldValue)") //浙江省 卧槽
+
+            
+            }
+    }
+    
+}
+
+var food1 = Food()
+food1.shengnei = "卧槽"
+food1.shengnei = "上下"
+
+//属性观察器 不仅仅适用于属性 也 适用于全局变量
+
+var myAge = 20 {
+    
+    willSet
+    {
+        print("我现在:\(myAge)即将到:\(newValue)")
+    }
+    didSet
+    {
+        print("我以前:\(oldValue)现在:\(myAge)")
+    }
+}
+
+myAge = 21
 
 
 
