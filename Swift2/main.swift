@@ -10,6 +10,7 @@ import Foundation
 
 print("Hello, World!")
 
+//#MARK:- 字符串操作
 print("我的名字"+"叫"+"MCI")
 //字符变量 定义之后不能拼接
 
@@ -51,7 +52,7 @@ if cas2.hasPrefix("ca")
 
 
 
-
+//#MARK:- 元组
 //元组:用来归类具有任意类型的关联值
 let Respond = (200,"NOT Found") //类型可以理解为（int，String）类型
 //元组解绑方式1：创建元组变量
@@ -70,8 +71,7 @@ let httpRespond = (stateCode:200,ResultInfo:"该账号已经登录")
 print(httpRespond.stateCode)
 print(httpRespond.ResultInfo)
 
-
-
+//#MARK:- 可选类型
 //可选类型:主要是为了解决有无值的问题
 //可选类型申明：类型＋？ 如果可选类型申明没有初始化 则会默认赋nil
 var schoolName:String?
@@ -86,7 +86,8 @@ if schoolName == nil
 
 let value:String = "20"
 let intValue = Int(value)
-print(intValue!)
+print(intValue!) //强制解封 不能是nil
+
 if intValue==nil
 {
     print("转换失败")
@@ -137,7 +138,7 @@ else
 
 
 
-
+//#MARK:- 数组
 /*******************************数组************************************/
 //数组类型的两种写法：Array<SomeType>,如Arrary<Int>、Array<String>
 //[String]、[Int] (简化版)
@@ -206,7 +207,7 @@ list.removeAll()
 list = []
 
 
-
+//#MARK:- 字典
 /*******************************字典************************************/
 //自建的类型做key的时候 必须遵循hash协议 做key的类型必须是一个可以hash化的类型 String Bool Int Double 都可以
 //字典类型定义：Dictionary<KeyType,ValueType>  [KeyType:ValueType]
@@ -279,7 +280,9 @@ for keyValue in dic1
 //清空
 dic1.removeAll()
 dic1 = [:]
+//#MARK:- Struct 和 Class 的区别
 
+//stuct 和 class 的区别 ：前者是值类型 后者是引用类型 前者是分配到栈区的 后者是分配到堆区
 //结构体:自定义的类型  对应基本数据类型的本质也是结构体
 //结构体定义格式：struct 结构体名 ：协议｛ 属性和方法 ｝
 struct StructName{
@@ -326,7 +329,7 @@ default :
     print("默认")
 }
 
-
+//#MARK:- 运算符
 /***************************运算符**************************/
 //&+ &- &/ &* &%  溢出运算
 let zero = 0
@@ -405,7 +408,7 @@ else
 //operator infix/prefix/postfix 自定义运算符｛｝
 //infix/prefix/postfix func (参数列表)->返回类型
 
-
+//#MARK:- 循环 两种方式 Switch
 //for 循环 两种方式
 //for item in collectType
 //for var index;index<cout;index++
@@ -521,7 +524,7 @@ default:
     print("最后一句")
 }
 
-
+//#MARK:-函数
 /*************************函数**************************/
 /*
  func <#name#>(<#parameters#>) -> <#return type#> {
@@ -794,7 +797,7 @@ print(sort([23,43,45], comp: {$0>$1}))
 //尾闭包：针对多行函数的简化
 
 
-
+//#MARK:-面向对象
 /**************************swift 面向对象****************************/
 //类关键字 Class
 class Person{
@@ -943,6 +946,12 @@ class Food {
             }
     }
     
+//    subscript (number:Int)->String?
+//        {
+//        
+//    
+//    }
+    
 }
 
 var food1 = Food()
@@ -965,5 +974,327 @@ var myAge = 20 {
 
 myAge = 21
 
+
+//继承 父类
+class Car{
+
+    var name:String = ""
+    
+    //计算属性
+    var made:String
+        {
+    
+            return "中国"
+    }
+    
+    
+    func producted(){
+        
+        print("我的名字是卡特:\(name)")
+    }
+    
+    final func time(){
+    
+        print("time")
+    }
+    ////构造器:在可以有参数 在这里面完成存储属性的初始化 构造器方法不能直接调用 而是通过类来调用
+    init(params:String)
+    {
+        name += params
+    }
+}
+
+//继承
+class BMW: Car {
+
+    //复写属性
+    override var made: String
+        {
+        
+        return "美国"
+    }
+    
+    //复写实列方法
+    override func producted() {
+        
+        print("我的名字叫：\(name)")
+    }
+    
+}
+
+//swift 不允许多继承 即不能有多个父类
+//父类的计算属性可以被子类复写 子类的读写权限必须大于等于父类
+//重写需要在前面加关键字override  如果父类的方法或者属性不能让子类复写 则在属性或者方法前面加final 关键字
+
+//实列化＋初始化
+var bmwCar:BMW = BMW(params: "国通带你")
+//存储属性的初始化:在使用之前，必须初始化 存储属性为可选类型时 如果不初始化 则为nil
+
+//初始化的方式1、在定义属性的时候赋一个值 方式2、使用init构造器 来初始化
+
+//重载：同一个类里面的方法名相同，参数列表不同(可以通过参数个数 或者 外部参数名来区分)  重写：子类继承父类 子类里面的方法名、参数列表完全相同    常见的重载：类的构造器
+
+class KeyBoard {
+    
+    //方式1
+    var address:String = ""
+    
+    var sign:String
+    //方式2
+    init (sign:String){
+    
+        self.sign = sign
+    }
+    //指定构造器
+    init (axis:String,addres:String,sig:String)
+    {
+        self.sign = sig
+        self.address = addres
+        print("这个来自\(self.address) \(self.sign)品牌 \(axis)的机械键盘")
+    }
+    
+    //便捷构造器 :简化指定构造器
+    convenience init()
+    {
+        self.init(axis:"黑轴",addres: "日本",sig: "Filco") 
+    }
+    
+    
+    //重载 这里通过外用参数名来区分
+    func keyNumber(chinese num:Int) {
+        
+        print("中国人喜欢用：\(num)健的键盘")
+    }
+    
+    func keyNumber(american num:Int) {
+        
+        print("美国人喜欢用：\(num)健的机械键盘")
+    }
+    
+    func keyNumber(num:Int,color:String) {
+        
+        print("人们喜欢用:\(num)的\(color)大F机械键盘")
+    }
+    
+    
+    //释放掉
+    deinit{
+        
+        print("我被无情的抛弃了")
+    }
+}
+
+class Board {
+    
+    var s:Double
+    //可失败构造器
+    init?(isCircle:Bool)
+    {
+        if isCircle {
+            
+            s = 0.134
+        }
+        else
+        {
+            return nil
+        }
+    }
+    
+}
+//默认构造器
+var HHKB = KeyBoard()
+
+//指定构造器
+var keyboard = KeyBoard(sign: "iKBC+Jaki+Cherry+Filco+HHKB+Duck")
+keyboard.keyNumber(chinese: 87)
+keyboard.keyNumber(american: 67)
+keyboard.keyNumber(104, color: "白色")
+
+var iKBC = KeyBoard(axis: "青轴", addres: "台湾", sig:"iKBC" )
+//构造器类型:默认构造器（swift自动实现） 指定构造器（init）:必须调用直接父类的指定构造器    便捷构造器（为了简化指定构造器的使用而增加的）:必须调用同一个类中定义的其它构造器  成员构造器（只适合结构体） 可失败构造器
+
+//可失败构造器
+var boarded = Board(isCircle:false)
+print(boarded?.s)
+
+//子类
+class Filco: KeyBoard {
+    
+    var weight = 0.0
+    override init(axis: String, addres: String, sig: String) {
+        super.init(axis: axis, addres: addres, sig: sig)
+        address = "法宾西" //父类的存储属性 必须在调用super 之后才能调用
+    }
+    
+}
+//如果父类的构造器带参数 则需要显示的调用
+
+//deinit 函数
+
+class Sence {
+    
+    var image:String
+    
+    init(imag:String)
+    {
+        image = imag
+        print("\(image)")
+    }
+    
+    convenience init()
+    {
+        self.init(imag:"Default.png")
+    }
+    
+    //析构函数 对象被释放的时候执行
+    deinit
+    {
+    
+        print("这个场景的图片\(image)即将被释放掉")
+    }
+    
+}
+
+
+class SenceBox {
+    
+    var sence:Sence = Sence()
+    
+    func next(image:String)
+    {
+     //这里会把第一个初始化的内存空间释放掉
+        sence = Sence(imag: image)
+    }
+    
+}
+
+class AngryBird{
+    
+    var senceBox = SenceBox()
+    func gotoNext() {
+        
+        senceBox.next("sky.png")
+    }
+    
+    //释放掉
+}
+//MARK:- 愤怒的小鸟
+var bird = AngryBird()
+bird.gotoNext()
+bird.gotoNext()
+bird.gotoNext()
+
+//MARK:- 两个变量或者常量是否引用了同一个对象 === !==  ＝＝ !=是用来比较值是否相等
+var bird1 = bird
+
+if bird === bird1
+{
+    print("这两个变量是引用了同一个对象")
+}
+
+//要设置为nil 必须为可选类型
+var sence1:Sence? = Sence(imag: "icon.png") //1
+var sence2:Sence? = sence1 //+1 = 2
+var sence3:Sence? = sence2 // +1 = 3
+
+sence3 = nil //-1 = 2
+sence2 = nil //-1 = 1
+sence1 = nil//-1 = 0  自动释放
+
+//swift 的内存管理 道理和 OC是一样的
+//MARK:- 循环引用问题
+//举例：
+class Cunsumer{
+    
+    //属性引用
+    var hisIphone:Iphone?
+    //函数引用
+//    func myIphone() -> Iphone{
+//        
+//        let iphone = Iphone() //count = 1
+//        print("这个手机的名字是\(iphone.name)")
+//        return iphone
+//        
+//    }
+    deinit
+    {
+        //对象已经被释放 不能在这里在释放iphone
+        print("用户对象已经被释放")
+    }
+}
+
+class Iphone {
+    
+    var name = "iphone 6s plus"
+    weak var cunsumer:Cunsumer?
+    
+    init(cunsumer:Cunsumer)
+    {
+        self.cunsumer = cunsumer
+    }
+    deinit
+    {
+        print("手机对象已经被释放掉")
+    }
+}
+
+//没问题 当cunsumer被释放掉了 手机
+//var cunsumer:Cunsumer? = Cunsumer()
+//cunsumer?.myIphone()
+//cunsumer = nil
+
+//这里会导致内存泄漏
+//var cunsumer:Cunsumer? = Cunsumer()//cunsumer.retainCount=1
+//var iph = cunsumer?.myIphone()//cunsumer.retainCount = 1
+//iph?.cunsumer = cunsumer//cunsumer.retainCount = 2
+//cunsumer = nil //cunsumer.retainCount = 1
+
+//MARK:- 循环引用解决方案:弱引用、无主引用、捕获列表
+//若变量或者常量指向的对象有可能为nil 即可选类型 则使用弱引用 在前面加weak
+//若不为nil （隐式解封） 则使用无主引用
+//如果使用闭包（OC 里面的代码块__weak typeof(self) weakself = self）里面有self引用 则使用捕获列表
+
+//使用weak
+var cunsumer:Cunsumer? = Cunsumer()//cunsumer.retainCount = 1
+//var iph:Iphone? =  Iphone(cunsumer) //iph 1
+
+cunsumer?.hisIphone = Iphone(cunsumer: cunsumer!)//iph 2
+
+//iph = nil
+cunsumer = nil //cunsumer.retainCount = 0
+
+//无主引用的场景:一旦初始化之后，都不能为nil的情况    其中一个为可选类型 一个为非可选类型
+
+class Parent {
+    
+    var children:Children?
+    
+    deinit
+    {
+        print("父亲释放了")
+    }
+    
+}
+
+class Children{
+    
+    
+    unowned var parent:Parent
+    init(parent : Parent){
+    
+        self.parent = parent
+    }
+    
+    
+    deinit
+    {
+        print("孩子对象释放了")
+    }
+}
+
+var p:Parent?
+p = Parent();
+p!.children = Children(parent: p!)
+p = nil
 
 
