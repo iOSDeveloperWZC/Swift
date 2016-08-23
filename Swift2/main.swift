@@ -712,10 +712,10 @@ func choseBankBusiness(bank:String) -> (String)->Bool  {
 
 /****************闭包**********************/
 
-//func compare(a:Int,b:Int) -> Bool {
-//    
-//    return a>b
-//}
+func compare(a:Int,b:Int) -> Bool {
+    
+    return a>b
+}
 
 
 func sort(nums:[Int],comp:(Int,Int)->Bool) -> [Int] {
@@ -768,33 +768,58 @@ func sort(nums:[Int],comp:(Int,Int)->Bool) -> [Int] {
     return newNums
 }
 //
-//var comp:(Int,Int)->Bool = compare
-//
-//
-//print(sort([20,43,32,90], comp: comp))
+var comp:(Int,Int)->Bool = compare
+print(sort([20,43,32,90], comp: comp))
 
-
-
+//#MARK:- 闭包
 //闭包：可以把简单的函数用 闭包表达式来解决  如上面的compare函数
 var arr = sort([20,43,32,90], comp: {(a:Int,b:Int)->Bool in return a>b})
 print(arr)
 
 //闭包的格式
 /*
- 
  {
     （参数列表）in 函数体
  }
- 
  */
 
 //闭包表达式简化
-print(sort([23,43,45], comp: {a,b in return a>b}))
+print(sort([23,43,45], comp: {a,b in return a>b})) //根据类型推断 省略类型
 print("")
-print(sort([23,43,45], comp: {a,b in a>b}))
+print(sort([23,43,45], comp: {a,b in a>b})) //只有一行代码 省略掉return
 print(sort([23,43,45], comp: {$0>$1}))
+print(sort([23,43,20], comp: >))
 
-//尾闭包：针对多行函数的简化
+//尾闭包：针对多行函数的简化 ：闭包表达式在函数参数最后一个位置  如果闭包表达式只有一行的情况下 没必要使用尾闭包  如果函数里面只有闭包表达式一个参数
+sort([23,45,2,19]){$0 > $1}
+
+//捕获值
+//返回的是一个函数类型 结果
+func outFun(amout:Int) -> ()->Int {
+    
+    var runningTotal = 0
+    //函数的本质也是一个类别
+    func incre() ->Int
+    {
+        runningTotal += amout
+        return runningTotal
+    }
+    //实际上是返回了一个（）－>Int 类型的变量
+    return incre
+}
+
+let s = outFun(20)
+print(s())//20
+print(s())//40
+
+
+
+
+
+
+
+
+
 
 
 //#MARK:-面向对象
@@ -1254,13 +1279,10 @@ class Iphone {
 //若不为nil （隐式解封） 则使用无主引用
 //如果使用闭包（OC 里面的代码块__weak typeof(self) weakself = self）里面有self引用 则使用捕获列表
 
+
 //使用weak
 var cunsumer:Cunsumer? = Cunsumer()//cunsumer.retainCount = 1
-//var iph:Iphone? =  Iphone(cunsumer) //iph 1
-
-cunsumer?.hisIphone = Iphone(cunsumer: cunsumer!)//iph 2
-
-//iph = nil
+cunsumer?.hisIphone = Iphone(cunsumer: cunsumer!)//iph 2 //这里感觉和oc里面的set＋1 不一样(oc 里面的点语法实际上是调用set get 方法 set的时候会执行retaincount操作，所以为＋1):OC 里面创建会＋1 如果成员属性引用＋1 这时候需要在dealloc里面调用release
 cunsumer = nil //cunsumer.retainCount = 0
 
 //无主引用的场景:一旦初始化之后，都不能为nil的情况    其中一个为可选类型 一个为非可选类型
@@ -1278,23 +1300,171 @@ class Parent {
 
 class Children{
     
-    
     unowned var parent:Parent
     init(parent : Parent){
     
         self.parent = parent
     }
     
-    
     deinit
     {
         print("孩子对象释放了")
     }
+    
 }
 
 var p:Parent?
 p = Parent();
 p!.children = Children(parent: p!)
 p = nil
+
+//捕获列表解循环引用
+//{[捕获列表 捕获对象](参数)->返回类型 in 闭包体}
+class WeatherReport{
+    
+    let address:String
+    let weather:String
+    var temperature:Int?
+    
+    lazy var report:()->String = {
+    
+        [weak self] in
+        
+        if let tem = self!.temperature
+        {
+            return "今天\(self!.address)的天气\(self!.weather) \(tem)"
+        }
+        else
+        {
+            return "暂无报告"
+        }
+    }
+    init(address addr:String,weat:String)
+    {
+        address = addr
+        weather = weat
+    }
+    
+    //下标访问方法 根据num 来处理逻辑
+    subscript(num:Int)->String
+        {
+        
+        get{
+        
+            return "王宗晨"
+        }
+        
+        set{
+                
+                
+        }
+    }
+    deinit
+    {
+        print("这个报告已经被释放掉了")
+    }
+}
+
+var w:WeatherReport? = WeatherReport(address: "杭州", weat: "阴转多云")
+w?.temperature = 35
+print("我们这里的：\(w!.report())")
+w = nil
+
+
+//MARK:-类型转换和类型检查 ：is 完成类型检查 as 完成类型转换（类似（NSClassFormString（）））
+class Fruit {
+    
+    var name : String
+    init(n:String)
+    {
+        name = n
+    }
+    
+    func destription() {
+        
+        print("我是苹果君")
+    }
+}
+
+class Apple: Fruit {
+    
+    override  func destription() {
+        
+        print("我是苹果君")
+    }
+
+}
+
+
+class Orange: Fruit{
+    
+   override func destription() {
+        
+        print("我是橘子君")
+    }
+    
+}
+
+let apple1 = Apple(n: "苹果大哥")
+let apple2 = Apple(n: "苹果老二")
+let apple3 = Apple(n: "苹果老三")
+
+let orange1 = Orange(n: "🍊")
+
+var basket = [apple1,apple2,apple3,orange1]
+
+//类型转换：as 的左边参数只能是父类的实列 右边的参数只能是子类的类型 转换成功则返回一个子类的实列 否则返回一个nil
+for fruit in basket
+{
+
+    fruit.destription()
+    
+//    if let apple = fruit as? Apple
+//    {
+//        apple.destription()
+//    }
+//    else if let orange = fruit as? Orange
+//    {
+//        orange.destription()
+//    }
+    
+}
+
+//类型检查： is 的左边参数只能是父类的实列 右边的参数只能是子类的类型
+for fruit in basket
+{
+    if fruit is Apple
+    {
+        print("我是苹果啊")
+    }
+    else if fruit is Orange
+    {
+        print("我是🍊")
+    }
+}
+
+
+//可以理解为默认继承Anyobject
+class className{
+    
+}
+
+var things = [Any]()
+
+//定义一个(Int)->Double 类型的变量
+func getResetTime(time:Int) -> Double {
+    
+    return Double(time*180)
+}
+
+things.append((23,"45"))
+things.append(30)
+
+things.append(getResetTime)
+
+print(things)
+
+
+
 
 
