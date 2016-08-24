@@ -874,10 +874,10 @@ class Animal {
             return "12061424"
         }
         
-//        set{
-//        
-//            self.number = newValue
-//        }
+        set{
+        
+            self.number = newValue
+        }
         
     }
     
@@ -983,7 +983,7 @@ var food1 = Food()
 food1.shengnei = "卧槽"
 food1.shengnei = "上下"
 
-//属性观察器 不仅仅适用于属性 也 适用于全局变量
+//MARK:-属性观察器 不仅仅适用于属性 也 适用于全局变量
 
 var myAge = 20 {
     
@@ -1000,7 +1000,7 @@ var myAge = 20 {
 myAge = 21
 
 
-//继承 父类
+//MARK:-继承 父类
 class Car{
 
     var name:String = ""
@@ -1070,7 +1070,7 @@ class KeyBoard {
     
         self.sign = sign
     }
-    //指定构造器
+    //指定构造器 同名重载
     init (axis:String,addres:String,sig:String)
     {
         self.sign = sig
@@ -1447,6 +1447,14 @@ for fruit in basket
 //可以理解为默认继承Anyobject
 class className{
     
+     class var string:String{
+        
+        get{
+            
+            return "嘿嘿"
+        }
+
+    }
 }
 
 var things = [Any]()
@@ -1463,6 +1471,304 @@ things.append(30)
 things.append(getResetTime)
 
 print(things)
+
+
+var pathArr = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+
+print(pathArr)
+
+
+//MARK:-类里面嵌套类
+class NewClass{
+    
+    
+    var FID:String?
+    var userName:String?
+    var son:SonClass?
+    
+    
+    
+    class var string:String{
+        
+        get{
+            
+            return "嘿嘿"
+        }
+        
+    }
+    
+    //嵌套类
+    class SonClass {
+        
+        var name = "哦草"
+        
+        class ShopingClass {
+            
+            var address:String?
+            
+        }
+        
+    }
+}
+
+//类里面的类可以通过点语法来使用
+var heh = NewClass.SonClass.ShopingClass()
+
+//MARK-:类扩展 和 OC里面的分类类似 Swift 不支持多继承但是可以遵循多个协议
+//可以添加计算属性 和 静态计算属性  定义实列方法和类方法(不能扩展存储属性)
+//提供新的构造器
+//定义附属脚本
+//定义和使用新的类型
+//使已有的类型符合协议
+
+extension Double
+{
+
+    //类属性
+    static var name = "扩展Double"
+    
+    //静态计算属性 (类属性)
+    static var length:Int{
+    
+        let s = "\(self)"
+        return s.lengthOfBytesUsingEncoding(NSUTF8StringEncoding);
+    }
+    
+    //扩展计算属性
+    var CNY:Double
+        {
+    
+       return self/23
+    }
+    
+    //扩展实列方法
+    func destription() ->String{
+        
+        return Double.name
+    }
+    
+    //扩展类方法
+    static func wwc()->String
+    {
+        return "真是日了🐶了"
+    }
+}
+
+var money:Double = 2300.09
+print(money.CNY)
+print(Double.name)
+print(Double.length)
+
+/*
+ OC 写法
+ NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+ [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+ NSString *strDate = [dateFormatter stringFromDate:date];
+ */
+
+//通过类获取
+extension NSDate
+{
+    //增加一个类方法来得到年月日
+    static func stringCurrentYMDHM()->String
+    {
+        let dateFormatter:NSDateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let str = dateFormatter.stringFromDate(self.init())
+        
+        return str
+    }
+}
+
+print(NSDate.stringCurrentYMDHM())
+
+class Swords {
+    
+    var name:String
+    
+    init(n:String)
+    {
+        name = n
+    }
+    
+    //构造便捷构造器
+    convenience init()
+    {
+        self.init(n: "运行时机制还没看完的")
+    }
+}
+
+//扩展便捷构造器
+extension Swords
+{
+    convenience init(name:String)
+    {
+        if name == "wangzongcheng" {
+            
+            self.init(n: "wangzongcheng")
+            
+        }
+        else
+        {
+            
+            self.init()
+            
+        }
+    }
+}
+
+//var swo = Swords(name: "wangzongcheng")
+var swo = Swords(name: "BBBBBBB")
+print(swo.name)
+
+//添加附属脚本和内嵌类型
+extension Int
+{
+
+    //扩展一个内嵌类
+    class Hehe {
+        
+        //下标访问方法
+        subscript (name:String,num:Int)->String?
+            {
+        
+            if name == "我的"&&num == 1
+            {
+                return "我的"
+            }
+            else
+            {
+                
+                return nil
+            }
+        }
+    }
+    
+    //扩展下标访问方法
+    subscript(num:Int)->String?{
+    
+        if num == 0
+        {
+            return "0"
+        }
+        else
+        {
+            return nil
+        }
+    }
+}
+
+var ints = Int.Hehe()
+if let h = ints["我的",1]
+{
+    print(h)
+}
+
+var ints1 = Int()
+print(ints1[0]!)//强制解封 哈哈 因为我知道0肯定可以返回“0”
+
+//MARK:-协议 定义一个协议 
+//协议1这种形式的协议只能是被类遵循 不能被结构体枚举遵循
+@objc protocol CustomizedKeyboardProtocol
+{
+//    //键帽
+   optional var keyHats:Int{
+        
+        get
+    }
+    
+    //LED等
+   optional var ledLamp:String{
+    
+        get
+    }
+    
+    //拔键帽
+    optional func pullHat(hatName:String) -> Bool
+    //选择轴
+//    optional func selectAxle()
+    
+}
+
+//协议2
+protocol sendWay {
+    
+    //get表示遵循这个协议的类在实现该属性的时候，既可以把属性变量var 也可以定义为let 
+    //set表示只能是var 不能是let set表示可以写
+    var time:String {
+        
+        get
+    }
+    
+    func way(way:String) -> Bool
+}
+
+//协议3 这种形式的协议只能是被类遵循 不能被结构体枚举遵循
+protocol weightLimit:class {
+    
+    func weight(par:Double) -> Bool
+}
+
+//协议4
+protocol finallyProtocol:sendWay,weightLimit,CustomizedKeyboardProtocol //最终也是协议3格式
+{
+    //类方法
+   static func finishWork()->Bool
+    
+}
+
+//类方法 在class 里面用class什么  在扩展协议里面用static来申明
+/*
+    class 类名：父类，协议1，协议2
+    {}
+ 
+ notice:不能多继承，只能有一个父类，或者没有父类，协议大于或者等于0个
+ */
+
+class HhkbKeyBoard:finallyProtocol {
+    
+    let time: String = "2015年3月23"
+    func way(way: String) -> Bool {
+        return true
+    }
+    
+    func weight(par: Double) -> Bool {
+        return true
+    }
+    
+    static func finishWork() -> Bool {
+        return true
+    }
+    
+    //可选择是否实现
+    @objc func pullHat(hatName: String) -> Bool {
+        
+        return true
+    }
+}
+
+//协议中的构造器
+protocol coderKeyboard {
+    
+
+    init(weaping:String)
+    //可失败构造器
+    init?(hasWeaping:Bool)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
